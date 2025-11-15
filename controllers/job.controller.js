@@ -33,6 +33,35 @@ export const postJob = async (req, res) => {
         console.log(error);
     }
 }
+
+// Admin Delete Job
+// Admin Delete Job
+export const deleteJob = async (req, res) => {
+    try {
+        const { id } = req.params; 
+        console.log("Attempting to delete Job ID:", id); // <-- TRACE 1: Check ID
+
+        const deletedJob = await Job.findByIdAndDelete(id); 
+
+        if (!deletedJob) {
+            console.log("Job ID not found in database:", id); // <-- TRACE 2: Check 404
+            return res.status(404).json({ 
+                message: 'Job not found.',
+                success: false
+            });
+        }
+        console.log("Job successfully deleted:", id); // <-- TRACE 3: Check Success
+
+        // ... success response ...
+
+    } catch (error) {
+        console.error("Mongoose/DB Error:", error); // <-- TRACE 4: Log Database Errors
+        return res.status(500).json({ 
+            // ...
+        });
+    }
+};
+
 // student k liye
 export const getAllJobs = async (req, res) => {
     try {
@@ -84,8 +113,8 @@ export const getAdminJobs = async (req, res) => {
         const adminId = req.id;
         const jobs = await Job.find({ created_by: adminId }).populate({
             path:'company',
-            createdAt:-1
-        });
+        }).sort({ createdAt: -1 });
+        
         if (!jobs) {
             return res.status(404).json({
                 message: "Jobs not found.",
