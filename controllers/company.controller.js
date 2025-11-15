@@ -1,6 +1,6 @@
 import { Company } from "../models/company.model.js";
- import getDataUri from "../utils/datauri.js";
  import cloudinary from "../utils/cloudinary.js";
+ import streamifier from "streamifier";
 
 export const registerCompany = async (req, res) => {
     try {
@@ -69,19 +69,33 @@ export const getCompanyById = async (req, res) => {
         console.log(error);
     }
 }
+
+
 export const updateCompany = async (req, res) => {
   try {
     const { name, description, website, location } = req.body;
     const updateData = { name, description, website, location };
 
-    // ফাইল থাকলে শুধু তখনই আপলোড করবে
+    // ফাইল থাকলে শুধুমাত্র তখন আপলোড হবে
     if (req.file) {
-      const fileUri = getDataUri(req.file);
-      const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-      updateData.logo = cloudResponse.secure_url;
+      const result = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: "company" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
+      });
+
+      updateData.logo = result.secure_url;
     }
 
-    const company = await Company.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    const company = await Company.findByIdAndUpdate(req.params.id, updateData, {
+      new: true
+    });
 
     if (!company) {
       return res.status(404).json({
