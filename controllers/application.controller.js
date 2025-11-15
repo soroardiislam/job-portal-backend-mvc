@@ -11,7 +11,7 @@ export const applyJob = async (req, res) => {
                 success: false
             })
         };
-        // check if the user has already applied for the job
+        
         const existingApplication = await Application.findOne({ job: jobId, applicant: userId });
 
         if (existingApplication) {
@@ -21,7 +21,7 @@ export const applyJob = async (req, res) => {
             });
         }
 
-        // check if the jobs exists
+        
         const job = await Job.findById(jobId);
         if (!job) {
             return res.status(404).json({
@@ -29,7 +29,7 @@ export const applyJob = async (req, res) => {
                 success: false
             })
         }
-        // create a new application
+        
         const newApplication = await Application.create({
             job:jobId,
             applicant:userId,
@@ -70,7 +70,7 @@ export const getAppliedJobs = async (req,res) => {
         console.log(error);
     }
 }
-// admin dekhega kitna user ne apply kiya hai
+
 export const getApplicants = async (req,res) => {
     try {
         const jobId = req.params.id;
@@ -106,7 +106,7 @@ export const updateStatus = async (req,res) => {
             })
         };
 
-        // find the application by applicantion id
+        
         const application = await Application.findOne({_id:applicationId});
         if(!application){
             return res.status(404).json({
@@ -115,7 +115,7 @@ export const updateStatus = async (req,res) => {
             })
         };
 
-        // update the status
+     
         application.status = status.toLowerCase();
         await application.save();
 

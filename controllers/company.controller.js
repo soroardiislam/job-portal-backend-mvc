@@ -76,7 +76,7 @@ export const updateCompany = async (req, res) => {
     const { name, description, website, location } = req.body;
     const updateData = { name, description, website, location };
 
-    // ফাইল থাকলে শুধুমাত্র তখন আপলোড হবে
+    
     if (req.file) {
       const result = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(

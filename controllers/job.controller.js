@@ -1,6 +1,6 @@
 import { Job } from "../models/job.model.js";
 
-// admin post krega job
+
 export const postJob = async (req, res) => {
     try {
         const { title, description, requirements, salary, location, jobType, experience, position, companyId } = req.body;
@@ -34,35 +34,33 @@ export const postJob = async (req, res) => {
     }
 }
 
-// Admin Delete Job
-// Admin Delete Job
+
 export const deleteJob = async (req, res) => {
     try {
         const { id } = req.params; 
-        console.log("Attempting to delete Job ID:", id); // <-- TRACE 1: Check ID
+        console.log("Attempting to delete Job ID:", id); 
 
         const deletedJob = await Job.findByIdAndDelete(id); 
 
         if (!deletedJob) {
-            console.log("Job ID not found in database:", id); // <-- TRACE 2: Check 404
+            console.log("Job ID not found in database:", id);
             return res.status(404).json({ 
                 message: 'Job not found.',
                 success: false
             });
         }
-        console.log("Job successfully deleted:", id); // <-- TRACE 3: Check Success
+        console.log("Job successfully deleted:", id); 
 
-        // ... success response ...
+        
 
     } catch (error) {
-        console.error("Mongoose/DB Error:", error); // <-- TRACE 4: Log Database Errors
+        console.error("Mongoose/DB Error:", error); 
         return res.status(500).json({ 
-            // ...
+            
         });
     }
 };
 
-// student k liye
 export const getAllJobs = async (req, res) => {
     try {
         const keyword = req.query.keyword || "";
@@ -89,7 +87,7 @@ export const getAllJobs = async (req, res) => {
         console.log(error);
     }
 }
-// student
+
 export const getJobById = async (req, res) => {
     try {
         const jobId = req.params.id;
@@ -107,7 +105,7 @@ export const getJobById = async (req, res) => {
         console.log(error);
     }
 }
-// admin kitne job create kra hai abhi tk
+
 export const getAdminJobs = async (req, res) => {
     try {
         const adminId = req.id;
